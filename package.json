@@ -1,0 +1,22 @@
+{
+  "name": "shortnr",
+  "version": "1.0.0",
+  "description": "a url shortener service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/johnallendyer/shortnr-node.git"
+  },
+  "author": "John Dyer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnallendyer/shortnr-node/issues"
+  },
+  "homepage": "https://github.com/johnallendyer/shortnr-node#readme",
+  "dependencies": {
+    "express": "^4.12.3"
+  }
+}
