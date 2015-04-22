@@ -6,6 +6,7 @@ var expect = require('chai').expect,
     request = require('request'),
     server = require('../app'),
     redis = require('redis'),
+    base_url = 'http://localhost:3000',
     client = redis.createClient();
 
 describe('server', function() {
@@ -25,7 +26,7 @@ describe('server', function() {
     // Test the index route
     describe('Test the index route', function() {
         it('should return a page with the title Shortnr', function(done) {
-            request.get({ url: 'http://localhost:3000' }, function(error, response, body) {
+            request.get({ url: base_url }, function(error, response, body) {
                 expect(body).to.include('Shortnr');
                 expect(response.statusCode).to.equal(200);
                 expect(response.headers['content-type']).to.equal('text/html; charset=utf-8');
@@ -37,7 +38,7 @@ describe('server', function() {
     // Test submitting a URL
     describe('Test submitting a URL', function() {
         it('should return the shortened URL', function(done) {
-            request.post('http://localhost:3000', { form: { url: 'http://www.google.com' }}, function(error, response, body) {
+            request.post(base_url, { form: { url: 'http://www.google.com' }}, function(error, response, body) {
                 expect(body).to.include('Your shortened URL is');
                 expect(response.statusCode).to.equal(200);
                 expect(response.headers['content-type']).to.equal('text/html; charset=utf-8');
@@ -49,7 +50,7 @@ describe('server', function() {
     // Test submitting an invalid URL
     describe('Test submitting an invalid URL', function() {
         it('should return a 404', function(done) {
-            request.post('http://localhost:3000', { form: { url: '@n-invalid,url' }}, function(error, response, body) {
+            request.post(base_url, { form: { url: '@n-invalid,url' }}, function(error, response, body) {
                 expect(response.statusCode).to.equal(404);
                 expect(body).to.include('Link not found');
                 done();
@@ -62,7 +63,7 @@ describe('server', function() {
         it('should redirect the user to the shortened URL', function(done) {
             client.set('testurl', 'http://www.google.com', function() {
                 request.get({
-                    url: 'http://localhost:3000/testurl',
+                    url: base_url + '/testurl',
                     followRedirect: false
                 }, function(error, response, body) {
                     expect(response.headers.location).to.equal('http://www.google.com');
@@ -77,7 +78,7 @@ describe('server', function() {
     describe('Test following a non-existent link', function() {
         it('should return a 404', function(done) {
             request.get({
-                url: 'http://localhost:3000/nonexistenturl',
+                url: base_url + '/nonexistenturl',
                 followRedirect: false
             }, function(error, response, body) {
                 expect(response.statusCode).to.equal(404);
