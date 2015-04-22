@@ -17,10 +17,9 @@ client = redis.createClient();
 // Set up redis connection
 /* istanbul ignore if */
 if (process.env.REDISTOGO_URL) {
-    console.log('heroku');
+    console.log(process.env.REDISTOGO_URL);
     client = require('redis-url').connect(process.env.REDISTOGO_URL);
 } else {
-    console.log('local');
     client = require('redis').createClient();
 }
 
