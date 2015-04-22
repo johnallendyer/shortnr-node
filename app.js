@@ -17,9 +17,7 @@ client = redis.createClient();
 // Set up redis connection
 /* istanbul ignore if */
 if (process.env.REDISTOGO_URL) {
-    rtg = require('url').parse(process.env.REDISTOGO_URL);
-    client = require('redis').createClient(rtg.port, rtg.hostname);
-    client.auth(rtg.auth.split(':')[1]);
+    require('redis-url').connect(process.env.REDISTOGO_URL);
 } else {
     client = require('redis').createClient();
 }

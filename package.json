@@ -21,6 +21,7 @@
     "express": "^4.12.3",
     "jade": "^1.9.2",
     "redis": "^0.12.1",
+    "redis-url": "^1.2.0",
     "shortid": "^2.2.2",
     "validator": "^3.38.0"
   },
