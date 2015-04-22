@@ -7,7 +7,7 @@ var express = require('express'),
     validator = require('validator'),
     shortid = require('shortid');
 
-var app, port, base_url, client;
+var app, port, base_url, client, rtg;
 
 app = express();
 port = process.env.PORT || 3000;
@@ -17,8 +17,10 @@ client = redis.createClient();
 // Set up redis connection
 /* istanbul ignore if */
 if (process.env.REDISTOGO_URL) {
-    console.log(process.env.REDISTOGO_URL);
-    client = require('redis-url').connect(process.env.REDISTOGO_URL);
+    rtg = require('url').parse(process.env.REDISTOGO_URL);
+    console.log(rtg);
+    client = require('redis').createClient(rtg.port, rtg.hostname);
+    client.auth(rtg.auth.split(':')[1]);
 } else {
     client = require('redis').createClient();
 }
