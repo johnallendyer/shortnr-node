@@ -35,10 +35,10 @@ describe('server', function() {
         });
     });
 
-    // Test submitting a URL
-    describe('Test submitting a URL', function() {
-        it('should return the shortened URL', function(done) {
-            request.post(base_url, { form: { url: 'http://www.google.com' }}, function(error, response, body) {
+    // Test submitting a URL from UI
+    describe('Test submitting a URL from the UI', function() {
+        it('should display the shortened URL on the output page', function(done) {
+            request.post(base_url, { form: { url: 'http://www.google.com', ui: true }}, function(error, response, body) {
                 expect(body).to.include('Your shortened URL is');
                 expect(response.statusCode).to.equal(200);
                 expect(response.headers['content-type']).to.equal('text/html; charset=utf-8');
@@ -47,12 +47,41 @@ describe('server', function() {
         });
     });
 
-    // Test submitting an invalid URL
-    describe('Test submitting an invalid URL', function() {
-        it('should return a 404', function(done) {
-            request.post(base_url, { form: { url: '@n-invalid,url' }}, function(error, response, body) {
+    // Test submitting a URL
+    describe('Test submitting a URL', function() {
+        it('should return json with the shortened URL', function(done) {
+            request.post(base_url, { form: { url: 'http://www.google.com' }}, function(error, response, body) {
+                var json = JSON.parse(body);
+
+                expect(json).to.have.property('success');
+                expect(json).to.have.property('url');
+                expect(json.success).to.equal(true);
+                expect(json.url).to.include(base_url);
+                done();
+            });
+        });
+    });
+
+    // Test submitting an invalid URL from UI
+    describe('Test submitting an invalid URL from the UI', function() {
+        it('should return a 404 and display error page', function(done) {
+            request.post(base_url, { form: { url: '@n-invalid,url', ui: true }}, function(error, response, body) {
                 expect(response.statusCode).to.equal(404);
                 expect(body).to.include('Link not found');
+                done();
+            });
+        });
+    });
+
+    // Test submitting an invalid URL
+    describe('Test submitting an invalid URL', function() {
+        it('should return json indicating an error', function(done) {
+            request.post(base_url, { form: { url: '@n-invalid,url' }}, function(error, response, body) {
+                var json = JSON.parse(body);
+
+                expect(json).to.have.property('success');
+                expect(json).to.have.property('message');
+                expect(json.success).to.equal(false);
                 done();
             });
         });

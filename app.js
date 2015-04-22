@@ -45,17 +45,31 @@ app.get('/', function(req, res) {
 
 app.post('/', function(req, res) {
     var url = req.body.url,
+        ui = req.body.ui,
         id;
 
-    if (validator.isURL(url)) {
+    if (validator.isURL(url, { require_protocol: true })) {
         id = shortid.generate();
         client.set(id, url, function() {
-            //res.send(base_url + '/' + id);
-            res.render('output', { id: id, base_url: base_url });
+            if (ui) {
+                res.render('output', { id: id, base_url: base_url });
+            } else {
+                res.json({
+                    success: true,
+                    url: base_url + '/' + id
+                });
+            }
         });
     } else {
-        res.status(404);
-        res.render('error');
+        if (ui) {
+            res.status(404);
+            res.render('error');
+        } else {
+            res.json({
+                success: false,
+                message: 'Invalid URL'
+            });
+        }
     }
 });
 
@@ -69,7 +83,6 @@ app.get('/:id', function(req, res) {
             res.send();
         } else {
             res.status(404);
-            //res.send();
             res.render('error');
         }
     });
