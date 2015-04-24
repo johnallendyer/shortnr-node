@@ -3,3 +3,4 @@ build
 coverage
 npm-debug.log
 .DS_Store
+dump.rdb
